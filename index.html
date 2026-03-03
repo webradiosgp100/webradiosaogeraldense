@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Rádio São Geraldense</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #16213e);
+    color: white;
+    text-align: center;
+}
+
+header {
+    background: #e94560;
+    padding: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.player {
+    margin-top: 30px;
+}
+
+button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.play { background: #28a745; color: white; }
+.pause { background: #ffc107; color: black; }
+.stop { background: #dc3545; color: white; }
+
+.volume-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#controleVolume {
+    width: 150px;
+    accent-color: #e94560;
+}
+
+.programacao {
+    margin-top: 30px;
+    padding: 15px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    display: inline-block;
+    text-align: left;
+}
+
+footer {
+    margin-top: 20px;
+    font-size: 14px;
+    opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+📻 Web Rádio São Geraldense
+</header>
+
+<div class="player">
+
+<h2 id="programaAtual">🎙️ Programa no Ar: Carregando...</h2>
+<h3 id="relogio">🕒 --:--:--</h3>
+
+<audio id="radio" src="https://stream.zeno.fm/x62qy3rypg0uv"></audio>
+
+<button class="play" onclick="playRadio()">▶️ Play</button>
+<button class="pause" onclick="pauseRadio()">⏸️ Pause</button>
+<button class="stop" onclick="stopRadio()">⏹️ Stop</button>
+
+<div class="volume-container">
+    <span id="iconeVolume">🔊</span>
+    <input type="range" id="controleVolume" min="0" max="1" step="0.01" value="1"
+           oninput="ajustarVolume(this.value)">
+    <span id="valorVolume">100%</span>
+</div>
+
+</div>
+
+<div class="programacao">
+<h3>📅 Programação</h3>
+<div id="programacaoDia"></div>
+</div>
+
+<footer>
+© 2026 - Web Rádio São Geraldense
+</footer>
+
+<script>
+const radio = document.getElementById("radio");
+
+// PLAYER
+function playRadio(){ radio.play(); }
+function pauseRadio(){ radio.pause(); }
+function stopRadio(){ radio.pause(); radio.currentTime = 0; }
+
+// VOLUME
+function ajustarVolume(valor){
+    radio.volume = valor;
+    let porcentagem = Math.round(valor * 100);
+    document.getElementById("valorVolume").innerText = porcentagem + "%";
+
+    const icone = document.getElementById("iconeVolume");
+    if(porcentagem === 0) icone.innerText = "🔇";
+    else if(porcentagem <= 50) icone.innerText = "🔉";
+    else icone.innerText = "🔊";
+}
+
+// RELÓGIO
+function atualizarRelogio(){
+    const agora = new Date();
+    document.getElementById("relogio").innerText =
+        "🕒 " + agora.toLocaleTimeString();
+}
+setInterval(atualizarRelogio,1000);
+
+// =======================
+// PROGRAMAÇÃO VISUAL
+// =======================
+
+function programacaoSemana() {
+return `
+<p><strong>05h às 05:50h</strong> – Hora Santa</p>
+<p><strong>06h às 10h</strong> – Momento Academia</p>
+<p><strong>10h às 12h</strong> – Pagode Da Raiz</p>
+<p><strong>12h às 13h</strong> – Programação Musical</p>
+<p><strong>13h às 14h</strong> – Giro das Noticias</p>
+<p><strong>14h às 15h</strong> – Programação Musical</p>
+<p><strong>15h às 16h</strong> – Resenha Do Dj</p>
+<p><strong>00h às 06h</strong> – Piloto Automático</p>
+`;
+}
+
+function programacaoSabado() {
+return `
+<p><strong>06h às 09h</strong> – Café Hits</p>
+<p><strong>10h às 21h</strong> – Pagode da Raiz Especial</p>
+<p><strong>23h às 00h</strong> – Baile da Madrugada</p>
+<p><strong>00h às 06h</strong> – Piloto Automático</p>
+`;
+}
+
+function programacaoDomingo() {
+return `
+<p><strong>06h às 09h</strong> – Café com Música</p>
+<p><strong>09h às 12h</strong> – Bom Dia Minas</p>
+<p><strong>14h às 16h</strong> – Raízes do Nordeste</p>
+<p><strong>16h às 18h</strong> – Balada DJ</p>
+<p><strong>19h às 20h</strong> – MPB Popular</p>
+<p><strong>23h às 00h</strong> – Baile da Madrugada</p>
+`;
+}
+
+function definirProgramacao(){
+    const hoje = new Date().getDay();
+    let conteudo = "";
+
+    if(hoje >=1 && hoje <=5) conteudo = programacaoSemana();
+    else if(hoje ===6) conteudo = programacaoSabado();
+    else conteudo = programacaoDomingo();
+
+    document.getElementById("programacaoDia").innerHTML = conteudo;
+}
+
+definirProgramacao();
+
+// =======================
+// DETECTAR PROGRAMA ATUAL
+// =======================
+
+function programaNoAr(){
+    const agora = new Date();
+    const hora = agora.getHours();
+    const dia = agora.getDay();
+
+    let nomePrograma = "Piloto Automático";
+
+    if(dia >=1 && dia <=5){ // Segunda a Sexta
+        if(hora >=5 && hora <6) nomePrograma = "Hora Santa";
+        else if(hora >=6 && hora <10) nomePrograma = "Momento Academia";
+        else if(hora >=10 && hora <12) nomePrograma = "Pagode Da Raiz";
+        else if(hora >=12 && hora <15) nomePrograma = "Programação Musical";
+        else if(hora >=15 && hora <16) nomePrograma = "Resenha Do Dj";
+    }
+
+    else if(dia ===6){ // Sábado
+        if(hora >=6 && hora <9) nomePrograma = "Café Hits";
+        else if(hora >=10 && hora <21) nomePrograma = "Pagode da Raiz Especial";
+        else if(hora >=23 || hora <6) nomePrograma = "Baile da Madrugada";
+    }
+
+    else { // Domingo
+        if(hora >=6 && hora <9) nomePrograma = "Café com Música";
+        else if(hora >=9 && hora <12) nomePrograma = "Bom Dia Minas";
+        else if(hora >=14 && hora <16) nomePrograma = "Raízes do Nordeste";
+        else if(hora >=16 && hora <18) nomePrograma = "Balada DJ";
+        else if(hora >=19 && hora <20) nomePrograma = "MPB Popular";
+        else if(hora >=23) nomePrograma = "Baile da Madrugada";
+    }
+
+    document.getElementById("programaAtual").innerText =
+        "🎙️ Programa no Ar: " + nomePrograma;
+}
+
+setInterval(programaNoAr,1000);
+programaNoAr();
+
+</script>
+
+</body>
+</html>
