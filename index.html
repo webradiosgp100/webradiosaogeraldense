@@ -140,10 +140,9 @@ return `
 <p><strong>05h às 05:50h</strong> – Hora Santa</p>
 <p><strong>06h às 10h</strong> – Momento Academia</p>
 <p><strong>10h às 12h</strong> – Pagode Da Raiz</p>
-<p><strong>12h às 13h</strong> – Programação Musical</p>
+<p><strong>12h às 13h</strong> – Resenha Do Dj</p>
 <p><strong>13h às 14h</strong> – Giro das Noticias</p>
-<p><strong>14h às 15h</strong> – Programação Musical</p>
-<p><strong>15h às 16h</strong> – Resenha Do Dj</p>
+<p><strong>14h às 23h</strong> – Programação Musical/p>
 <p><strong>00h às 06h</strong> – Piloto Automático</p>
 `;
 }
@@ -196,8 +195,8 @@ function programaNoAr(){
         if(hora >=5 && hora <6) nomePrograma = "Hora Santa";
         else if(hora >=6 && hora <10) nomePrograma = "Momento Academia";
         else if(hora >=10 && hora <12) nomePrograma = "Pagode Da Raiz";
-        else if(hora >=12 && hora <15) nomePrograma = "Programação Musical";
-        else if(hora >=15 && hora <16) nomePrograma = "Resenha Do Dj";
+        else if(hora >=12 && hora <13) nomePrograma = "Resenha Do Dj";
+        else if(hora >=14 && hora <00) nomePrograma = "Programação musical";
     }
 
     else if(dia ===6){ // Sábado
